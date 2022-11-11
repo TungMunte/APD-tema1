@@ -5,9 +5,6 @@
 #include <unistd.h>
 #include <math.h>
 
-pthread_mutex_t mutex_mapper;
-pthread_mutex_t mutex_reducer;
-
 struct my_mapper
 {
     int id;
@@ -26,34 +23,6 @@ struct my_reducer
     int number_of_mapper;
     struct my_mapper *mapper;
 };
-
-int calc_pow(int x, int y)
-{
-    int value = 1;
-    for (size_t i = 0; i < y; i++)
-    {
-        value = value * x;
-    }
-    return value;
-}
-
-int check_root(int n, int y)
-{
-    if (n == 1 || n == 0)
-    {
-        return 1;
-    }
-
-    // approach 1
-    for (size_t i = 2; i <= sqrt(n); i++)
-    {
-        if (n == calc_pow(i, y))
-        {
-            return 1;
-        }
-    }
-    return 0;
-}
 
 int getNthRoot(double m, int n)
 {
@@ -274,8 +243,6 @@ int main(int argc, char *argv[])
     mapper = (struct my_mapper *)malloc(number_of_mapper * sizeof(struct my_mapper));
     reducer = (struct my_reducer *)malloc(number_of_reducer * sizeof(struct my_reducer));
 
-    pthread_mutex_init(&mutex_reducer, NULL);
-
     // start mapper
     for (size_t i = 0; i < number_of_mapper; i++)
     {
@@ -320,6 +287,5 @@ int main(int argc, char *argv[])
         pthread_join(threads[i], NULL);
     }
 
-    pthread_mutex_destroy(&mutex_reducer);
     return 0;
 }
